@@ -61,7 +61,7 @@ void print_result(int row, int col, complex **input) {
 		    printf("%f ", model(input[i][j]));
         }
         printf("\n");
-	}
+    }
 }
 
 complex **fft_2d(int row, int col, int fft_point, complex **input) {
