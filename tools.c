@@ -4,8 +4,7 @@ complex* x;
 int N;			
 int bits;		
 
-void fft_init(int fft_point, int xn_length, complex* xn)
-{
+void fft_init(int fft_point, int xn_length, complex* xn) {
 	int i = 0;
 	N = fft_point;
 	bits = (int)log2(N);
@@ -21,8 +20,7 @@ void fft_init(int fft_point, int xn_length, complex* xn)
 	}	
 }
 
-void ifft_init(int ifft_point, complex* xk)		
-{
+void ifft_init(int ifft_point, complex* xk) {
 	int i;
 	N = ifft_point;
 	bits = (int)log2(N);
@@ -34,32 +32,28 @@ void ifft_init(int ifft_point, complex* xk)
 	}
 }
 
-complex add(complex a, complex b)		
-{
+complex add(complex a, complex b) {
 	complex result;
 	result.real = a.real + b.real;
 	result.imaginary = a.imaginary + b.imaginary;
 	return result;
 }
 
-complex sub(complex a, complex b)	
-{
+complex sub(complex a, complex b) {
 	complex result;
 	result.real = a.real - b.real;
 	result.imaginary = a.imaginary - b.imaginary;
 	return result;
 }
 
-complex multiplication(complex a, complex b)
-{
+complex multiplication(complex a, complex b) {
 	complex result;
 	result.real = a.real*b.real - a.imaginary*b.imaginary;
 	result.imaginary = a.real*b.imaginary + a.imaginary*b.real;
 	return result;
 }
 
-double model(complex a)
-{
+double model(complex a) {
 	double result;
 	double real2 = pow(a.real, 2);
 	double imaginary2 = pow(a.imaginary, 2);
@@ -67,16 +61,14 @@ double model(complex a)
 	return result;
 }
 
-complex conjugate(complex a)
-{			
+complex conjugate(complex a) {			
 	complex result;
 	result.real = a.real;
 	result.imaginary = -a.imaginary;
 	return result;
 }
 
-void reverse()
-{ 
+void reverse() { 
 	complex temp;
 	char* flag = (char*)malloc(N * sizeof(char));
 	int i, j, current_n, target_n;
@@ -101,8 +93,7 @@ void reverse()
 	free(flag);
 }
 
-complex w_builder(int m,int k)
-{
+complex w_builder(int m,int k) {
 	complex W;
 	double base = pow(2, m);
 	W.real = cos(2 * pi*k / base);
@@ -110,8 +101,7 @@ complex w_builder(int m,int k)
 	return W;
 }
 
-void butterfly(int x1_point, int x2_point, complex wn)
-{
+void butterfly(int x1_point, int x2_point, complex wn) {
 	complex result1, result2, T;
 	T = multiplication(x[x2_point], wn);
 	result1 = add(x[x1_point], T);
@@ -121,8 +111,7 @@ void butterfly(int x1_point, int x2_point, complex wn)
 	x[x2_point] = result2;
 }
 
-void single_fft(int m)
-{
+void single_fft(int m) {
 	int point_distance = (int)pow(2, m - 1);
 	int group_distance = 2 * point_distance;
 	int group_count = N / group_distance;
@@ -144,8 +133,7 @@ void single_fft(int m)
 	}
 }
 
-complex* fft(int fft_point, int xn_length, complex* xn)
-{
+complex *fft(int fft_point, int xn_length, complex* xn) {
 	int i;
 	fft_init(fft_point, xn_length, xn);
 	reverse();
@@ -155,8 +143,7 @@ complex* fft(int fft_point, int xn_length, complex* xn)
 	return x;
 }
 
-complex* ifft(int xk_length, complex* xk)
-{
+complex *ifft(int xk_length, complex* xk) {
 	int i;
 	ifft_init(xk_length, xk);
 	reverse();
