@@ -21,4 +21,4 @@ complex w_builder(int m, int k);
 void butterfly(int x1_point, int x2_point, complex wn);
 void single_fft(int m);
 complex *fft(int fft_point, int xn_length, complex *xn);
-complex *ifft(int xk_length, complex* xk);
+complex *ifft(int xk_length, complex *xk);
