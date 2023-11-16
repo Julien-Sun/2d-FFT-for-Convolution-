@@ -1,5 +1,5 @@
 EXE = 2dFFT
-GCC = g++
+GCC = g++ -fopenmp
 
 $(EXE): 2dFFT.o tools.o
 	$(GCC) $^ -o $(EXE)
