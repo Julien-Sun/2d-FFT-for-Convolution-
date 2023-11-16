@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include "tools.h"
+#include <omp.h>
+#include <time.h>
 
 // size of image
-#define M 8
-#define N 8
+#define M 256
+#define N 256
 // size of convolution kernel
 #define X 3
 #define Y 3
@@ -61,7 +63,7 @@ void print_result(int row, int col, complex **input) {
 		    printf("%f ", model(input[i][j]));
         }
         printf("\n");
-    }
+	}
 }
 
 complex **fft_2d(int row, int col, int fft_point, complex **input) {
@@ -138,9 +140,9 @@ int main() {
     int row_x = M;
     int col_x = N;
     int channel = 3;
-    // complex **xn = NULL;
-    // xn = mat_initialize(row_x, col_x);
+
     complex **xn[channel];
+    #pragma omp parallel for 
     for (int i=0; i<3; i++) {
         xn[i] = mat_initialize(row_x, col_x);
     }
@@ -156,13 +158,17 @@ int main() {
     int row = M;
     int col = N;
 
+    // time_t start_time = 0, end_time = 0;
+    // start_time = clock();
+    double start_time, end_time;
+    start_time = omp_get_wtime();
+
     complex **kn_pad = NULL;
     kn_pad = mat_pad(row_k, col_k, row, col, kn);
   
     // FFT
-    // complex **xk = NULL;
-    // xk = fft_2d(row, col, fft_point, xn);
     complex **xk[channel];
+    #pragma omp parallel for 
     for (int i=0; i<3; i++) {
         xk[i] = fft_2d(row, col, fft_point, xn[i]);
     }
@@ -171,15 +177,15 @@ int main() {
     kk = fft_2d(row, col, fft_point, kn_pad);
 
     // Multiplication
-    // complex **res_mid = NULL;
-    // res_mid = mat_multi(row, col, xk, kk);
     complex **res_mid[channel];
+    #pragma omp parallel for 
     for (int i=0; i<3; i++) {
         res_mid[i] = mat_multi(row, col, xk[i], kk);
     }
 
     // IFFT
     complex **xr[channel];
+    #pragma omp parallel for 
     for (int i=0; i<3; i++) {
         xr[i] = ifft_2d(row, col, fft_point, xk[i]);
     }
@@ -187,19 +193,20 @@ int main() {
     complex **kr = NULL;
     kr = ifft_2d(row, col, fft_point, kk);
 
-    // complex **res = NULL;
-    // res = ifft_2d(row, col, fft_point, res_mid);
     complex **res[channel];
+    #pragma omp parallel for 
     for (int i=0; i<3; i++) {
         res[i] = ifft_2d(row, col, fft_point, res_mid[i]);
     }
 
     complex **res_total = NULL;
     res_total = (complex **)malloc(sizeof(complex *) * row);
+    #pragma omp parallel for 
     for (int i = 0; i < row; i++) {
         res_total[i] = (complex *)malloc(sizeof(complex) * col);
     }
 
+    #pragma omp parallel for 
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
             res_total[i][j].imaginary = 0;
@@ -210,7 +217,11 @@ int main() {
         }
     }
 
+    // end_time = clock();
+    end_time = omp_get_wtime();
+
     // print result
+    /*
     printf("xn:\n");
     print_result(row, col, xn[2]);
     printf("kn_pad:\n");
@@ -221,6 +232,9 @@ int main() {
     print_result(row, col, kr);
     printf("res_total:\n");
     print_result(row, col, res_total);
+    */
+    // printf("Time Used: %f s\n", (double)(end_time-start_time)/CLOCKS_PER_SEC);
+    printf("Time Used: %f s\n", end_time-start_time);
 
     for (int i = 0; i < channel; i++){
         free(xn[i]);
