@@ -2,8 +2,8 @@
 #include "tools.h"
 
 // size of image
-#define M 8
-#define N 8
+#define M 256
+#define N 256
 // size of convolution kernel
 #define X 3
 #define Y 3
