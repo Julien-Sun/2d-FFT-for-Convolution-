@@ -1,2 +1,2 @@
 # 2d-FFT-for-Convolution
-This is an implementation of 2-D convolution using FFT. 
+This is a trivial figure convolution implementation for compare. 
