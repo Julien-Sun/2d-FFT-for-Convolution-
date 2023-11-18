@@ -6,8 +6,8 @@
 #define M 256
 #define N 256
 // size of convolution kernel
-#define X 256
-#define Y 256
+#define X 3
+#define Y 3
 
 double **mat_initialize(int row, int col) {
     double **mat = NULL;
