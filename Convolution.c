@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <omp.h>
 
 // size of image
 #define M 256
@@ -31,6 +32,7 @@ double **convolve(int row_input, int col_input, int row_kernel, int col_kernel, 
         output[i] = (double *)malloc(sizeof(double) * col_input);
     }
 
+    #pragma omp parallel for 
     for (i = 0; i < row_input; i++) {
         for (j = 0; j < col_input; j++) {
             sum = 0;
@@ -68,6 +70,7 @@ int main() {
     int channel = 3;
 
     double **xn[channel];
+    #pragma omp parallel for 
     for (int i=0; i<channel; i++) {
         xn[i] = mat_initialize(row_x, col_x);
     }
@@ -82,20 +85,22 @@ int main() {
     int row = M;
     int col = N;
 
-    time_t start_time = 0, end_time = 0;
-    start_time = clock();
+    double start_time, end_time;
+    start_time = omp_get_wtime();
 
     double **res[channel];
+    #pragma omp parallel for 
     for (int i=0; i<channel; i++) {
         res[i] = convolve(row_x, col_x, row_k, col_k, xn[i], kn);
     }
 
     double **res_total = NULL;
     res_total = (double **)malloc(sizeof(double *) * row);
+    #pragma omp parallel for 
     for (int i = 0; i < row; i++) {
         res_total[i] = (double *)malloc(sizeof(double) * col);
     }
-
+    #pragma omp parallel for 
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
             res_total[i][j] = 0;
@@ -105,7 +110,7 @@ int main() {
         }
     }
 
-    end_time = clock();
+    end_time = omp_get_wtime();
 /*
     // print result
     printf("xn:\n");
@@ -115,7 +120,7 @@ int main() {
     printf("res_total:\n");
     print_result(row, col, res_total);
  */   
-    printf("Time Used: %f s\n", (double)(end_time-start_time)/CLOCKS_PER_SEC);
+    printf("Time Used: %f s\n", end_time-start_time);
 
     for (int i = 0; i < channel; i++){
         free(xn[i]);

@@ -1,5 +1,5 @@
 EXE = Convolution
-GCC = g++ -O0
+GCC = g++ -fopenmp
 
 $(EXE): Convolution.o
 	$(GCC) $^ -o $(EXE)
