@@ -143,7 +143,7 @@ int main() {
 
     complex **xn[channel];
     #pragma omp parallel for 
-    for (int i=0; i<3; i++) {
+    for (int i=0; i<channel; i++) {
         xn[i] = mat_initialize(row_x, col_x);
     }
 
@@ -169,7 +169,7 @@ int main() {
     // FFT
     complex **xk[channel];
     #pragma omp parallel for 
-    for (int i=0; i<3; i++) {
+    for (int i=0; i<channel; i++) {
         xk[i] = fft_2d(row, col, fft_point, xn[i]);
     }
 
@@ -179,14 +179,14 @@ int main() {
     // Multiplication
     complex **res_mid[channel];
     #pragma omp parallel for 
-    for (int i=0; i<3; i++) {
+    for (int i=0; i<channel; i++) {
         res_mid[i] = mat_multi(row, col, xk[i], kk);
     }
 
     // IFFT
     complex **xr[channel];
     #pragma omp parallel for 
-    for (int i=0; i<3; i++) {
+    for (int i=0; i<channel; i++) {
         xr[i] = ifft_2d(row, col, fft_point, xk[i]);
     }
 
@@ -195,7 +195,7 @@ int main() {
 
     complex **res[channel];
     #pragma omp parallel for 
-    for (int i=0; i<3; i++) {
+    for (int i=0; i<channel; i++) {
         res[i] = ifft_2d(row, col, fft_point, res_mid[i]);
     }
 
