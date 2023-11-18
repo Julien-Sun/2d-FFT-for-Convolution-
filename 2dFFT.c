@@ -141,7 +141,7 @@ int main() {
     // complex **xn = NULL;
     // xn = mat_initialize(row_x, col_x);
     complex **xn[channel];
-    for (int i=0; i<3; i++) {
+    for (int i=0; i<channel; i++) {
         xn[i] = mat_initialize(row_x, col_x);
     }
 
@@ -163,7 +163,7 @@ int main() {
     // complex **xk = NULL;
     // xk = fft_2d(row, col, fft_point, xn);
     complex **xk[channel];
-    for (int i=0; i<3; i++) {
+    for (int i=0; i<channel; i++) {
         xk[i] = fft_2d(row, col, fft_point, xn[i]);
     }
 
@@ -174,13 +174,13 @@ int main() {
     // complex **res_mid = NULL;
     // res_mid = mat_multi(row, col, xk, kk);
     complex **res_mid[channel];
-    for (int i=0; i<3; i++) {
+    for (int i=0; i<channel; i++) {
         res_mid[i] = mat_multi(row, col, xk[i], kk);
     }
 
     // IFFT
     complex **xr[channel];
-    for (int i=0; i<3; i++) {
+    for (int i=0; i<channel; i++) {
         xr[i] = ifft_2d(row, col, fft_point, xk[i]);
     }
 
@@ -190,7 +190,7 @@ int main() {
     // complex **res = NULL;
     // res = ifft_2d(row, col, fft_point, res_mid);
     complex **res[channel];
-    for (int i=0; i<3; i++) {
+    for (int i=0; i<channel; i++) {
         res[i] = ifft_2d(row, col, fft_point, res_mid[i]);
     }
 
