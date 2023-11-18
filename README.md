@@ -4,7 +4,7 @@ This version uses openMP to parallelize the code and compare the runtime of the 
 ## Runtime Results
 The size of the input matrix is $256*256$.
 We change the size of the convolution kernel and record the average runtime, and compare it with that of trivial figure convolution.
-| Size of Kernel     | Original Convolution Runtime (s)     | Parallel Convolution Runtime (s)     | Original FFT Runtime (s)     | Parallel FFT Runtime (s)     |
+| Size of Kernel | Original Convolution Runtime (s) | Parallel Convolution Runtime (s) | Original FFT Runtime (s) | Parallel FFT Runtime (s) |
 | -------- | -------- | -------- | -------- | -------- |
 | 3 | 0.0257 | 3 | 1.4193 | 0.9090 |
 | 15 | 0.2384 | 3 | 1.4136 | 0.8929 |
