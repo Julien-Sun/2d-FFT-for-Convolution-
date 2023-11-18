@@ -1,2 +1,2 @@
 # 2d-FFT-for-Convolution
-This is a trivial figure convolution implementation for compare. 
+This is a parallel figure convolution implementation with openMP for compare. 
