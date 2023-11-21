@@ -17,4 +17,5 @@ We change the size of the convolution kernel and record the average runtime, and
 Results are shown below.
 
 ![convolution_time](https://github.com/Julien-Sun/2d-FFT-for-Convolution-/assets/67185297/f3b62ab0-6c90-407a-ae76-04dbe85f8901)
+
 ![FFT_time](https://github.com/Julien-Sun/2d-FFT-for-Convolution-/assets/67185297/b8178da6-11f1-42e9-9a28-d87c77ad2c09)
