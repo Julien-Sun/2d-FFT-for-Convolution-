@@ -11,4 +11,6 @@ We change the size of the convolution kernel and record the average runtime, and
 | 60 | 3.2623 | 1.8867 | 1.4084 | 0.7177 |
 | 120 | 12.6859 | 6.7755 | 1.4064 | 0.7121 |
 | 256 | 52.7343 | 26.5379 | 1.4085 | 0.6968 |
-
+Results are shown below.
+![convolution_time](https://github.com/Julien-Sun/2d-FFT-for-Convolution-/assets/67185297/f3b62ab0-6c90-407a-ae76-04dbe85f8901)
+![FFT_time](https://github.com/Julien-Sun/2d-FFT-for-Convolution-/assets/67185297/b8178da6-11f1-42e9-9a28-d87c77ad2c09)
