@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "tools.h"
-#include <omp.h>
 #include <time.h>
 
 // size of image
@@ -47,7 +46,7 @@ complex **mat_multi(int row, int col, complex **input1, complex **input2) {
     for (int i = 0; i < row; i++) {
         multi_result[i] = (complex *)malloc(sizeof(complex) * col);
     }
-
+    #pragma omp parallel for 
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
             multi_result[i][j] = multiplication(input1[i][j], input2[i][j]);
@@ -70,27 +69,31 @@ complex **fft_2d(int row, int col, int fft_point, complex **input) {
     complex* xk1[row];
     complex* xk2[col];
     // FFT
+    #pragma omp parallel for 
 	for (int i = 0; i < row; i++) {
         xk1[i] = fft(fft_point, col, &input[i][0]);
     }
 
     complex x_temp[col][row];
+    #pragma omp parallel for 
     for (int i = 0; i < col; i++) {
         for (int j = 0; j < row; j++) {
             x_temp[i][j] = xk1[j][i];
         }
     }
 
+    #pragma omp parallel for 
     for (int i = 0; i < col; i++) {
         xk2[i] = fft(fft_point, row, &x_temp[i][0]);
     }
 
     complex **xk = NULL;
     xk = (complex **)malloc(sizeof(complex *) * row);
+    #pragma omp parallel for 
     for (int i = 0; i < row; i++) {
         xk[i] = (complex *)malloc(sizeof(complex) * col);
     }
-
+    #pragma omp parallel for 
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
             xk[i][j] = xk2[j][i];
@@ -104,18 +107,21 @@ complex **ifft_2d(int row, int col, int fft_point, complex **input) {
     complex* xr1[row];
     complex* xr2[col];
     // IFFT
+    #pragma omp parallel for 
     for (int i = 0; i < row; i++) {
         xr1[i] = ifft(fft_point, &input[i][0]);
     }
 
     complex x_r_temp[col][row];
 
+    #pragma omp parallel for 
     for (int i = 0; i < col; i++) {
         for (int j = 0; j < row; j++) {
             x_r_temp[i][j] = xr1[j][i];
         }
     }
 
+    #pragma omp parallel for 
     for (int i = 0; i < col; i++) {
         xr2[i] = ifft(fft_point, &x_r_temp[i][0]);
     }
@@ -125,7 +131,8 @@ complex **ifft_2d(int row, int col, int fft_point, complex **input) {
     for (int i = 0; i < row; i++) {
         xr[i] = (complex *)malloc(sizeof(complex) * col);
     }
-
+    
+    #pragma omp parallel for 
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
             xr[i][j] = xr2[j][i];
