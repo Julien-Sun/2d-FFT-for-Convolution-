@@ -20,7 +20,7 @@ Results are shown below.
 
 ![FFT_time](https://github.com/Julien-Sun/2d-FFT-for-Convolution-/assets/67185297/b8178da6-11f1-42e9-9a28-d87c77ad2c09)
 
-## FLOP Results
+## FLOPs Results
 
 We also measured the FLOPs of different methods. The results showed that when the kernel size is small, FFT does not accelerate the program and instead increases the runtime. However, when the kernel size is large, FFT shows a significant acceleration effect. The reason for the acceleration provided by FFT is its ability to greatly reduce the FLOPs of the code.
 
