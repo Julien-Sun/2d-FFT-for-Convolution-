@@ -16,11 +16,13 @@ We change the size of the convolution kernel and record the average runtime, and
 
 Results are shown below.
 
-![convolution_time](https://github.com/Julien-Sun/2d-FFT-for-Convolution-/assets/67185297/f3b62ab0-6c90-407a-ae76-04dbe85f8901)
+![convolution_time](https://github.com/Julien-Sun/2d-FFT-for-Convolution-/assets/67185297/0f32cdc2-91d8-4ebc-b8fc-0ec7d0513a8f)
 
 ![FFT_time](https://github.com/Julien-Sun/2d-FFT-for-Convolution-/assets/67185297/b8178da6-11f1-42e9-9a28-d87c77ad2c09)
 
 ## FLOP Results
+
+We also measured the FLOPs of different methods. The results showed that when the kernel size is small, FFT does not accelerate the program and instead increases the runtime. However, when the kernel size is large, FFT shows a significant acceleration effect. The reason for the acceleration provided by FFT is its ability to greatly reduce the FLOPs of the code.
 
 | Size of Kernel | Naive Convolution | FFT Convolution |
 | -------- | -------- | -------- |
