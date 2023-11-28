@@ -7,37 +7,33 @@
 #define M 256
 #define N 256
 // size of convolution kernel
-#define X 3
-#define Y 3
+#define X 256
+#define Y 256
 
 double **mat_initialize(int row, int col) {
-    double **mat = NULL;
-    mat = (double **)malloc(sizeof(double *) * row);
+    double **mat = (double **)malloc(sizeof(double *) * row);
     for (int i = 0; i < row; i++) {
         mat[i] = (double *)malloc(sizeof(double) * col);
         for (int j = 0; j < col; j++) {
-            mat[i][j] = i+j;
+            mat[i][j] = i + j;
         }
     }
     return mat;
 }
 
 double **convolve(int row_input, int col_input, int row_kernel, int col_kernel, double **input, double **kernel) {
-    int i, j, k, l;
-    double sum;
-
-    double **output = NULL;
-    output = (double **)malloc(sizeof(double *) * row_input);
+    double **output = (double **)malloc(sizeof(double *) * row_input);
     for (int i = 0; i < row_input; i++) {
         output[i] = (double *)malloc(sizeof(double) * col_input);
     }
 
-    #pragma omp parallel for 
-    for (i = 0; i < row_input; i++) {
-        for (j = 0; j < col_input; j++) {
-            sum = 0;
-            for (k = 0; k < row_kernel; k++) {
-                for (l = 0; l < col_kernel; l++) {
+//    #pragma omp parallel for collapse(2) num_threads(4)
+    #pragma omp parallel for collapse(2)
+    for (int i = 0; i < row_input; i++) {
+        for (int j = 0; j < col_input; j++) {
+            double sum = 0;
+            for (int k = 0; k < row_kernel; k++) {
+                for (int l = 0; l < col_kernel; l++) {
                     int x = i + k - row_kernel / 2;
                     int y = j + l - col_kernel / 2;
                     
@@ -57,57 +53,58 @@ double **convolve(int row_input, int col_input, int row_kernel, int col_kernel, 
 void print_result(int row, int col, double **input) {
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
-		    printf("%f ", input[i][j]);
+            printf("%.4f ", input[i][j]);
         }
         printf("\n");
-	}
+    }
 }
 
 int main() {
+
+//    omp_set_num_threads(64);
+    
     // initialize image
     int row_x = M;
     int col_x = N;
     int channel = 3;
 
-    double **xn[channel];
-    #pragma omp parallel for 
-    for (int i=0; i<channel; i++) {
+    double ***xn = (double ***)malloc(sizeof(double **) * channel);
+    for (int i = 0; i < channel; i++) {
         xn[i] = mat_initialize(row_x, col_x);
     }
 
     // initialize convolution kernel
     int row_k = X;
     int col_k = Y;
+    double **kn = mat_initialize(row_k, col_k);
 
-    double **kn = NULL;
-    kn = mat_initialize(row_k, col_k);
-
-    int row = M;
-    int col = N;
+    // initialize result matrix
+    double **res_total = (double **)malloc(sizeof(double *) * row_x);
+    for (int i = 0; i < row_x; i++) {
+        res_total[i] = (double *)malloc(sizeof(double) * col_x);
+    }
 
     double start_time, end_time;
     start_time = omp_get_wtime();
 
-    double **res[channel];
-    #pragma omp parallel for 
-    for (int i=0; i<channel; i++) {
-        res[i] = convolve(row_x, col_x, row_k, col_k, xn[i], kn);
-    }
+    #pragma omp parallel for num_threads(channel)
+    for (int i = 0; i < channel; i++) {
+        double **res = convolve(row_x, col_x, row_k, col_k, xn[i], kn);
 
-    double **res_total = NULL;
-    res_total = (double **)malloc(sizeof(double *) * row);
-    #pragma omp parallel for 
-    for (int i = 0; i < row; i++) {
-        res_total[i] = (double *)malloc(sizeof(double) * col);
-    }
-    #pragma omp parallel for 
-    for (int i = 0; i < row; i++) {
-        for (int j = 0; j < col; j++) {
-            res_total[i][j] = 0;
-            for (int k = 0; k < channel; k++){
-                res_total[i][j] = res_total[i][j] + res[k][i][j];
+        #pragma omp critical
+        {
+            for (int j = 0; j < row_x; j++) {
+                for (int k = 0; k < col_x; k++) {
+                    res_total[j][k] += res[j][k];
+                }
             }
         }
+
+        // free memory
+        for (int j = 0; j < row_x; j++) {
+            free(res[j]);
+        }
+        free(res);
     }
 
     end_time = omp_get_wtime();
@@ -118,18 +115,24 @@ int main() {
     printf("kn:\n");
     print_result(row_k, col_k, kn);
     printf("res_total:\n");
-    print_result(row, col, res_total);
- */   
-    printf("Time Used: %f s\n", end_time-start_time);
+    print_result(row_x, col_x, res_total);
+*/
+    printf("Time Used: %f s\n", end_time - start_time);
 
-    for (int i = 0; i < channel; i++){
+    // free memory
+    for (int i = 0; i < channel; i++) {
+        for (int j = 0; j < row_x; j++) {
+            free(xn[i][j]);
+        }
         free(xn[i]);
-        free(res[i]);
+    }
+    for (int i = 0; i < row_x; i++) {
+        free(res_total[i]);
     }
 
+    free(xn);
     free(kn);
     free(res_total);
 
     return 0;
-
 }
