@@ -31,3 +31,6 @@ We also measured the FLOPs of different methods. The results showed that when th
 | 60 | 627471408 | 176422912 |
 | 120 | 2206679808 | 176422912 |
 | 256 | 7247953920 | 176422912 |
+
+![convolution_flops](https://github.com/Julien-Sun/2d-FFT-for-Convolution/assets/67185297/eef0d55c-845e-4a92-ac73-4cd0c2c06f9b)
+
