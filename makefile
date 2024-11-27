@@ -1,11 +1,10 @@
-EXE = 2dFFT
-GCC = g++
+EXE = Convolution
+GCC = g++ -O0
 
-$(EXE): 2dFFT.o tools.o
+$(EXE): Convolution.o
 	$(GCC) $^ -o $(EXE)
-2dFFT.o: 2dFFT.c tools.h
+Convolution.o: Convolution.c
 	$(GCC) -c $< -o $@
-tools.o: tools.c tools.h
-	$(GCC) -c $< -o $@
+	
 clean:
 	rm *.o $(EXE)
